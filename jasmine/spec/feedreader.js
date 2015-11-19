@@ -31,9 +31,15 @@ $(function() {
      * and that the URL is not empty.
      */
 
-    it('should have valid URL', function() {
+    it('should have defined URL', function() {
       for (var i = 0; i < allFeeds.length; i++) {
         expect(allFeeds[i].url).toBeDefined();
+      }
+    });
+
+    it('should have a non empty URL string', function() {
+      for (var i = 0; i < allFeeds.length; i++) {
+        expect(allFeeds[i].url).not.toBe('');
       }
     });
 
@@ -41,9 +47,15 @@ $(function() {
      * in the allFeeds object and ensures it has a name defined
      * and that the name is not empty.
      */
-    it('should have valid name', function() {
+    it('should have a name defined', function() {
       for (var i = 0; i < allFeeds.length; i++) {
         expect(allFeeds[i].name).toBeDefined();
+      }
+    });
+
+    it('should have a non empty name string', function() {
+      for (var i = 0; i < allFeeds.length; i++) {
+        expect(allFeeds[i].name).not.toBe('');
       }
     });
   });
@@ -66,7 +78,7 @@ $(function() {
     */
     it('should change visibility when clicked', function() {
       $('.menu-icon-link').click();
-      expect($('body').hasClass('menu-hidden')).not.toBeTruthy();
+      expect($('body').hasClass('menu-hidden')).toBeFalsy();
       $('.menu-icon-link').click();
       expect($('body').hasClass('menu-hidden')).toBeTruthy();
     });
@@ -91,29 +103,28 @@ $(function() {
   });
 
   describe('New Feed Selection', function() {
-    var value = 0;
-    var data;
-    var data2;
+    var $feedLinksA;
+    var $feedLinksB;
 
     /* A test that ensures when a new feed is loaded
      * by the loadFeed function that the content actually changes.
      */
     beforeEach(function(done) {
-      loadFeed(value, function() {
+      // load the first feed and save the result when it's done
+      loadFeed(0, function() {
+        $feedLinksA = $('.feed').html();
         done();
       });
     });
 
-    it('should load feed 0', function() {
-      data = $('.feed .entry-link:first-of-type').attr('href');
-      expect(data).toBeDefined();
-      value = 1;
+    it('should replace old feed', function(done) {
+      // load the second feed
+      // save and compare the result to above
+      loadFeed(1, function() {
+        $feedLinksB = $('.feed').html();
+        expect($feedLinksA).not.toBe($feedLinksB);
+        done();
+      });
     });
-
-    it('should load feed 1 and replace data', function() {
-      data2 = $('.feed .entry-link:first-of-type').attr('href');
-      expect(data).not.toBe(data2);
-    });
-
   });
 }());
